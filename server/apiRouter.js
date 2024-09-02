@@ -25,6 +25,8 @@ const router = express.Router();
 
 // ================ API router middleware: ================ //
 
+router.use(bodyParser.json());
+
 // Parse Transit body first to a string
 router.use(
   bodyParser.text({
@@ -79,5 +81,7 @@ router.get('/auth/google', authenticateGoogle);
 // with Google. In this route a Passport.js custom callback is used for calling
 // loginWithIdp endpoint in Sharetribe Auth API to authenticate user to the marketplace
 router.get('/auth/google/callback', authenticateGoogleCallback);
+
+router.use('/formsite', require('./api/formsite'));
 
 module.exports = router;
