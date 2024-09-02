@@ -1,0 +1,11 @@
+
+.printButton {
+    margin: 20px 0;
+    width: fit-content;
+    padding: 16px 32px;
+}
+
+.listItem {
+    list-style-position: inside;
+    list-style-type: disc;
+}

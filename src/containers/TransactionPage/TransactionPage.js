@@ -490,6 +490,8 @@ export const TransactionPageComponent = props => {
           marketplaceName={config.marketplaceName}
         />
       }
+      onManageDisableScrolling={onManageDisableScrolling}
+      transaction={transaction}
     />
   ) : (
     loadingOrFailedFetching

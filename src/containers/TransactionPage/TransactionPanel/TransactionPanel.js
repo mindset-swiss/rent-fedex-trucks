@@ -8,6 +8,7 @@ import { propTypes } from '../../../util/types';
 import { userDisplayNameAsString } from '../../../util/data';
 import { isMobileSafari } from '../../../util/userAgent';
 import { createSlug } from '../../../util/urlHelpers';
+import { transitions as bookingTransitions } from '../../../transactions/transactionProcessBooking';
 
 import { AvatarLarge, NamedLink, UserDisplayName } from '../../../components';
 
@@ -25,6 +26,7 @@ import FeedSection from './FeedSection';
 import ActionButtonsMaybe from './ActionButtonsMaybe';
 import DiminishedActionButtonMaybe from './DiminishedActionButtonMaybe';
 import PanelHeading from './PanelHeading';
+import TermsModal from './TermsModal/TermsModal';
 
 import css from './TransactionPanel.module.css';
 
@@ -141,6 +143,8 @@ export class TransactionPanelComponent extends Component {
       orderBreakdown,
       orderPanel,
       config,
+      onManageDisableScrolling,
+      transaction,
     } = this.props;
 
     const isCustomer = transactionRole === 'customer';
@@ -187,6 +191,10 @@ export class TransactionPanelComponent extends Component {
     const deliveryMethod = protectedData?.deliveryMethod || 'none';
 
     const classes = classNames(rootClassName || css.root, className);
+
+    const { id: txId, booking, attributes: txAttributes } = transaction || {};
+    const transitions = txAttributes?.transitions || [];
+    const isAccepted = transitions.includes(bookingTransitions.ACCEPT);
 
     return (
       <div className={classes}>
@@ -281,6 +289,17 @@ export class TransactionPanelComponent extends Component {
               activityFeed={activityFeed}
               isConversation={isInquiryProcess}
             />
+            {isAccepted ? <TermsModal
+              onManageDisableScrolling={onManageDisableScrolling}
+              intl={intl}
+              listing={listing}
+              customer={customer}
+              provider={provider}
+              txId={txId}
+              booking={booking}
+              txAttributes={txAttributes}
+            /> : null}
+
             {showSendMessageForm ? (
               <SendMessageForm
                 formId={this.sendMessageFormName}
