@@ -255,17 +255,17 @@ const AddListingFields = props => {
 
     return isKnownSchemaType && isProviderScope && isTargetListingType && isTargetCategory
       ? [
-          ...pickedFields,
-          <CustomExtendedDataField
-            key={namespacedKey}
-            name={namespacedKey}
-            fieldConfig={fieldConfig}
-            defaultRequiredMessage={intl.formatMessage({
-              id: 'EditListingDetailsForm.defaultRequiredMessage',
-            })}
-            formId={formId}
-          />,
-        ]
+        ...pickedFields,
+        <CustomExtendedDataField
+          key={namespacedKey}
+          name={namespacedKey}
+          fieldConfig={fieldConfig}
+          defaultRequiredMessage={intl.formatMessage({
+            id: 'EditListingDetailsForm.defaultRequiredMessage',
+          })}
+          formId={formId}
+        />,
+      ]
       : pickedFields;
   }, []);
 
@@ -399,6 +399,30 @@ const EditListingDetailsFormComponent = props => (
               intl={intl}
             />
           ) : null}
+
+          <FieldTextInput
+            id={`${formId}Plate_number`}
+            name="Plate_number"
+            type="text"
+            className={css.title}
+            label={intl.formatMessage({ id: 'EditListingDetailsForm.Plate_number' })}
+            placeholder={intl.formatMessage({ id: 'EditListingDetailsForm.Plate_numberPlaceholder' })}
+            validate={required(intl.formatMessage({
+              id: 'EditListingDetailsForm.Plate_numberRequired',
+            }))}
+          />
+
+          <FieldTextInput
+            id={`${formId}VIN`}
+            name="VIN"
+            type="text"
+            className={css.title}
+            label={intl.formatMessage({ id: 'EditListingDetailsForm.Vin' })}
+            placeholder={intl.formatMessage({ id: 'EditListingDetailsForm.VinPlaceholder' })}
+            validate={required(intl.formatMessage({
+              id: 'EditListingDetailsForm.VinRequired',
+            }))}
+          />
 
           <Button
             className={css.submitButton}
