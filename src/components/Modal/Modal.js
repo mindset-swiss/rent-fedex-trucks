@@ -123,6 +123,7 @@ export class ModalComponent extends Component {
       scrollLayerClassName,
       closeButtonMessage,
       containerClassName,
+      containerExtraClassName,
       contentClassName,
       lightCloseButton,
       intl,
@@ -156,7 +157,8 @@ export class ModalComponent extends Component {
     const modalClass = isOpen ? isOpenClass : isClosedClassName;
     const classes = classNames(modalClass, className);
     const scrollLayerClasses = scrollLayerClassName || css.scrollLayer;
-    const containerClasses = containerClassName || css.container;
+    const fullClassName = containerExtraClassName ? classNames(css.container, containerExtraClassName) : css.container;
+    const containerClasses = containerClassName || fullClassName;
     const portalRoot = this.state.portalRoot;
 
     // If you want to use Portal https://reactjs.org/docs/portals.html

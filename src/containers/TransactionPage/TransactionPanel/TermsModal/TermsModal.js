@@ -48,6 +48,7 @@ const TermsModal = (props) => {
         categoryLevel1,
         year,
         address = "Test address",
+        Plate_number,
     } = publicData || {};
 
     const {
@@ -61,7 +62,7 @@ const TermsModal = (props) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return <div className={css.root}>
-        <a onClick={() => setIsOpen(true)}>
+        <a className={css.openLink} onClick={() => setIsOpen(true)}>
             <FormattedMessage id="TermsModal.openLink" />
         </a>
 
@@ -71,6 +72,7 @@ const TermsModal = (props) => {
             onClose={() => setIsOpen(false)}
             usePortal
             onManageDisableScrolling={onManageDisableScrolling}
+            containerExtraClassName={css.modalContainer}
         >
             <PrimaryButton
                 className={css.printButton}
@@ -103,7 +105,7 @@ const TermsModal = (props) => {
                     </li>
                 </ul>
 
-                <h3>
+                {/* <h3>
                     <FormattedMessage id="TermsModal.header.title3" />
                 </h3>
                 <p>
@@ -115,7 +117,7 @@ const TermsModal = (props) => {
                 </h4>
                 <p>
                     <FormattedMessage id="TermsModal.header.text4" />
-                </p>
+                </p> */}
 
                 <h2>
                     <FormattedMessage
@@ -174,8 +176,10 @@ const TermsModal = (props) => {
                 </h4>
                 <p>{providerDisplayName}</p>
 
-                {/* <h4>LICENSE PLATE</h4>
-            <p>CJH882</p> */}
+                <h4>
+                    <FormattedMessage id="TermsModal.body.plate" />
+                </h4>
+                <p>{Plate_number}</p>
 
                 <hr />
 
@@ -223,19 +227,29 @@ const TermsModal = (props) => {
                     <FormattedMessage id="TermsModal.body.p2" />
                 </p>
 
+                <hr />
+
                 <h3>
                     <FormattedMessage id="TermsModal.footer.title1" />
                 </h3>
-                <p>
-                    <FormattedMessage id="TermsModal.footer.text1" />
-                </p>
+                <p><FormattedMessage id="TermsModal.footer.text1.1" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text1.2" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text1.3" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text1.4" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text1.5" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text1.6" /></p>
 
                 <h3>
                     <FormattedMessage id="TermsModal.footer.title2" />
                 </h3>
-                <p>
-                    <FormattedMessage id="TermsModal.footer.text2" />
-                </p>
+                <p><FormattedMessage id="TermsModal.footer.text2.1" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text2.2" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text2.3" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text2.4" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text2.5" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text2.6" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text2.7" /></p>
+                <p><FormattedMessage id="TermsModal.footer.text2.8" /></p>
 
                 <h3>
                     <FormattedMessage id="TermsModal.footer.title3" />

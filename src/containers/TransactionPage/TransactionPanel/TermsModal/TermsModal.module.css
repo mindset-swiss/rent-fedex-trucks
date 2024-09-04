@@ -1,3 +1,16 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.modalContainer {
+    flex-basis: unset !important;
+}
+
+.openLink {
+    margin-left: 24px;
+
+    @media (--viewportLarge) {
+        margin-left: 0;
+    }
+}
 
 .printButton {
     margin: 20px 0;
