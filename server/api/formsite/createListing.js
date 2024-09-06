@@ -34,10 +34,10 @@ const Mapper = {
 
 module.exports = async (req, res) => {
     try {
-        const OwnerFirstName = req.body.items.find(i => i.id == Mapper["OwnerFirstName"]).value;
-        const OwnerLastName = req.body.items.find(i => i.id == Mapper["OwnerLastName"]).value;
-        const CompanyName = req.body.items.find(i => i.id == Mapper["CompanyName"]).value;
-        const PhoneNumber = req.body.items.find(i => i.id == Mapper["PhoneNumber"]).value;
+        // const OwnerFirstName = req.body.items.find(i => i.id == Mapper["OwnerFirstName"]).value;
+        // const OwnerLastName = req.body.items.find(i => i.id == Mapper["OwnerLastName"]).value;
+        // const CompanyName = req.body.items.find(i => i.id == Mapper["CompanyName"]).value;
+        // const PhoneNumber = req.body.items.find(i => i.id == Mapper["PhoneNumber"]).value;
         const year = req.body.items.find(i => i.id == Mapper["year"]).values[0].value;
         const Make = req.body.items.find(i => i.id == Mapper["Make"]).values[0].value;
         const Model = req.body.items.find(i => i.id == Mapper["Model"]).value;
@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
         const ProofOfInsurance = req.body.items.find(i => i.id == Mapper["ProofOfInsurance"]).values;
         const TruckPictures = req.body.items.find(i => i.id == Mapper["TruckPictures"]).values;
 
-        const title = `${Make} ${Model} ${year}`;
+        const title = `${year} ${Make} ${Model} ${Box_length} ${categoryLevel1}`;
         const publicDataItems = {
             // OwnerFirstName,
             // OwnerLastName,
@@ -65,7 +65,7 @@ module.exports = async (req, res) => {
             Miles,
             Plate_number,
             VIN,
-            categoryLevel1,
+            categoryLevel1: categoryLevel1.replaceAll(" ", ""),
             // FedExID,
             RentalLocation,
             RegistrationCopy,
@@ -92,24 +92,25 @@ module.exports = async (req, res) => {
                     const listingState = notAllowedToPublish ? "pendingApproval" : "published";
 
                     res.status(200)
-                            .set('Content-Type', 'application/transit+json')
-                            .send({ success: true });
+                        .set('Content-Type', 'application/transit+json')
+                        .send({ success: true });
 
                     const {
                         country,
                         postalCode,
                         address,
                         geoLocation,
-                    } = await getPlaceInfo(RentalLocation);
+                    } = await getPlaceInfo(RentalLocation) || {};
 
                     const truckImagesURLs = TruckPictures.map(tp => tp.value);
                     const images = await uploadImages(truckImagesURLs);
 
+                    const geoLocationMaybe = geoLocation ? { geolocation: new LatLng(geoLocation.lat, geoLocation.lng) } : {}
                     const params = {
                         title,
                         authorId: foundUser.id,
                         state: listingState,
-                        geolocation: new LatLng(geoLocation.lat, geoLocation.lng),
+                        ...geoLocationMaybe,
                         publicData: {
                             location: {
                                 address,
