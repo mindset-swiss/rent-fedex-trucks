@@ -439,8 +439,9 @@ export const fetchTransaction = (id, txRole, config) => (dispatch, getState, sdk
       }
     })
     .then(response => {
-      const listingFields = config?.listing?.listingFields;
-      const sanitizeConfig = { listingFields };
+      // const listingFields = config?.listing?.listingFields;
+      // const sanitizeConfig = { listingFields };
+      const sanitizeConfig = {};
 
       dispatch(addMarketplaceEntities(txResponse, sanitizeConfig));
       dispatch(addMarketplaceEntities(response, sanitizeConfig));
