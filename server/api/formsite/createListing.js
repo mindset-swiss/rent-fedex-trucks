@@ -30,6 +30,9 @@ const Mapper = {
     RegistrationCopy: '7',
     ProofOfInsurance: '9',
     TruckPictures: '11',
+    GVWR: '21',
+    price: '19',
+    availability: '20',
 };
 
 module.exports = async (req, res) => {
@@ -51,6 +54,9 @@ module.exports = async (req, res) => {
         const RegistrationCopy = req.body.items.find(i => i.id == Mapper["RegistrationCopy"]).values;
         const ProofOfInsurance = req.body.items.find(i => i.id == Mapper["ProofOfInsurance"]).values;
         const TruckPictures = req.body.items.find(i => i.id == Mapper["TruckPictures"]).values;
+        const GVWR = req.body.items.find(i => i.id == Mapper["GVWR"]).value;
+        const price = req.body.items.find(i => i.id == Mapper["price"]).value;
+        const availabilityDays = req.body.items.find(i => i.id == Mapper["availability"])?.values || [];
 
         const title = `${year} ${Make} ${Model} ${Box_length} ${categoryLevel1}`;
         const publicDataItems = {
@@ -71,6 +77,7 @@ module.exports = async (req, res) => {
             RegistrationCopy,
             ProofOfInsurance,
             TruckPictures,
+            GVWR,
         };
 
         if (FedExID) {
@@ -126,18 +133,30 @@ module.exports = async (req, res) => {
                             ...publicDataItems,
                         },
                         images: images.filter(image => image),
+                        availabilityPlan: {
+                            type: "availability-plan/time",
+                            timezone: "America/Chicago",
+                            entries: availabilityDays.map(ad => {
+                                return {
+                                    dayOfWeek: ad.value.toLowerCase().substring(0, 3),
+                                    seats: 1,
+                                    startTime: "00:00",
+                                    endTime: "00:00"
+                                }
+                            })
+                        },
                     };
 
                     // if (description) {
                     //     params.description = description;
                     // };
 
-                    // if (price) {
-                    //     params.price = {
-                    //         currency: "USD",
-                    //         amount: price,
-                    //     };
-                    // };
+                    if (price) {
+                        params.price = {
+                            currency: "USD",
+                            amount: price * 100,
+                        };
+                    };
 
                     try {
                         const listingRes = await integrationSdk.listings.create(params);
@@ -145,6 +164,7 @@ module.exports = async (req, res) => {
                         //     .set('Content-Type', 'application/transit+json')
                         //     .send(listingRes)
                     } catch (error) {
+                        console.log(error);
                         // handleError(res, error);
                     };
                 };

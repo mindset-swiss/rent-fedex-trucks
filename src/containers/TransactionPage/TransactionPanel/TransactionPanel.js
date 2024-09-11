@@ -194,7 +194,7 @@ export class TransactionPanelComponent extends Component {
 
     const { id: txId, booking, attributes: txAttributes } = transaction || {};
     const transitions = txAttributes?.transitions || [];
-    const isAccepted = transitions.includes(bookingTransitions.ACCEPT);
+    const isAccepted = transitions.some(v => v.transition == bookingTransitions.ACCEPT || v.transition == bookingTransitions.OPERATOR_ACCEPT);
 
     return (
       <div className={classes}>

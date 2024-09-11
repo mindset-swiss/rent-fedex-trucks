@@ -47,8 +47,8 @@ const TermsModal = (props) => {
         Model,
         categoryLevel1,
         year,
-        address = "Test address",
         Plate_number,
+        location,
     } = publicData || {};
 
     const {
@@ -57,7 +57,7 @@ const TermsModal = (props) => {
         payoutTotal,
     } = txAttributes || {};
 
-    const { start, end } = booking || {};
+    const { start, end } = booking?.attributes || {};
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -196,12 +196,12 @@ const TermsModal = (props) => {
                 <h4>
                     <FormattedMessage id="TermsModal.body.pickupLocation" />
                 </h4>
-                <p>{address}</p>
+                <p>{location?.address}</p>
 
                 <h4>
                     <FormattedMessage id="TermsModal.body.returnLocation" />
                 </h4>
-                <p>{address}</p>
+                <p>{location?.address}</p>
 
                 <hr />
 
