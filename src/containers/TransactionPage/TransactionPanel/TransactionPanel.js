@@ -279,7 +279,7 @@ export class TransactionPanelComponent extends Component {
                 />
               </div>
             ) : null}
-
+            {console.log(isAccepted)}
             <FeedSection
               rootClassName={css.feedContainer}
               hasMessages={messages.length > 0}

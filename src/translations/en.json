@@ -973,7 +973,7 @@
   "StripePayoutPage.redirectingToStripe": "You returned early from Stripe. Redirecting you back to Stripe…",
   "StripePayoutPage.submitButtonText": "Save details",
   "StripePayoutPage.title": "Payout details",
-  "TermsModal.openLink": "See terms and conditions",
+  "TermsModal.openLink": "View rental agreement",
   "TermsModal.printButton": "Print",
   "TermsModal.header.title1": "Rent My Truck sharing agreement",
   "TermsModal.header.text1": "Please keep this document as evidence of your transaction during or after your Rent My Truck LLC reservation (for example, when dealing with law enforcement, insurance providers, roadside assistance, impound lot attendants, etc.).",

@@ -208,14 +208,7 @@ const TermsModal = (props) => {
                 <h4>
                     <FormattedMessage id="TermsModal.body.primaryDriver" />
                 </h4>
-                <p>{providerDisplayName}</p>
-
-                <hr />
-
-                <h4>
-                    <FormattedMessage id="TermsModal.body.miles" />
-                </h4>
-                <p>{Miles}</p>
+                <p>{customerDisplayName}</p>
 
                 <hr />
 
