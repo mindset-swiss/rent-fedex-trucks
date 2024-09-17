@@ -15,7 +15,7 @@ import {
 } from '../../util/userHelpers';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 
-import { H3, Page, UserNav, NamedLink, LayoutSingleColumn } from '../../components';
+import { H3, H4, Page, UserNav, NamedLink, LayoutSingleColumn } from '../../components';
 
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
@@ -115,7 +115,7 @@ export const ProfileSettingsPageComponent = props => {
   // I.e. the status is active, not pending-approval or banned
   const isUnauthorizedUser = currentUser && !isUserAuthorized(currentUser);
 
-  const { userType } = publicData || {};
+  const { userType, FedExID } = publicData || {};
   const profileImageId = user.profileImage ? user.profileImage.id : null;
   const profileImage = image || { imageId: profileImageId };
   const userTypeConfig = userTypes.find(config => config.userType === userType);
@@ -150,6 +150,18 @@ export const ProfileSettingsPageComponent = props => {
     />
   ) : null;
 
+  const uploadLicenseContainer = <div className={css.uploadLicenseContainer}>
+    <H4 as="h2">
+      <FormattedMessage id="ProfileSettingsPage.uploadLicenseTitle" />
+    </H4>
+
+    <iframe
+      src={`https://fs10.formsite.com/tKj6Xo/kytrnfzztu/fill?id1=${FedExID}`}
+      title="Upload License Form"
+      className={css.licenseIframe}
+    />
+  </div>;
+
   const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 
   return (
@@ -172,6 +184,7 @@ export const ProfileSettingsPageComponent = props => {
             <ViewProfileLink userUUID={user?.id?.uuid} isUnauthorizedUser={isUnauthorizedUser} />
           </div>
           {profileSettingsForm}
+          {uploadLicenseContainer}
         </div>
       </LayoutSingleColumn>
     </Page>
