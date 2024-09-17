@@ -31,3 +31,10 @@
   float: right;
   flex-shrink: 0;
 }
+
+.licenseIframe {
+  margin-top: 24px;
+  border: none;
+  width: 100%;
+  height: 500px;
+}
