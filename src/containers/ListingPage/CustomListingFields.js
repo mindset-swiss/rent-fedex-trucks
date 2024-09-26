@@ -12,6 +12,8 @@ import SectionDetailsMaybe from './SectionDetailsMaybe';
 import SectionMultiEnumMaybe from './SectionMultiEnumMaybe';
 import SectionTextMaybe from './SectionTextMaybe';
 
+import css from './ListingPage.module.css';
+
 /**
  * Renders custom listing fields.
  * - SectionDetailsMaybe is used if schemaType is 'enum', 'long', or 'boolean'
@@ -43,7 +45,25 @@ const CustomListingFields = props => {
 
   return (
     <>
-      <SectionDetailsMaybe {...props} isFieldForCategory={isFieldForSelectedCategories} />
+      <section className={css.sectionText}>
+        {publicData ? (
+          <ul className={css.details}>
+            {['year', 'Make', 'Model', 'Box_length', 'GVWR'].map(
+              key =>
+                publicData[key] && (
+                  <li key={key} className={css.detailsRow}>
+                    <span className={css.detailLabel}>
+                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                    </span>
+                    <span>{publicData[key]}</span>
+                  </li>
+                )
+            )}
+          </ul>
+        ) : null}
+      </section>
+
+      {/* <SectionDetailsMaybe {...props} isFieldForCategory={isFieldForSelectedCategories} />
       {propsForCustomFields.map(customFieldProps => {
         const { schemaType, ...fieldProps } = customFieldProps;
         return schemaType === SCHEMA_TYPE_MULTI_ENUM ? (
@@ -51,7 +71,7 @@ const CustomListingFields = props => {
         ) : schemaType === SCHEMA_TYPE_TEXT ? (
           <SectionTextMaybe {...fieldProps} />
         ) : null;
-      })}
+      })} */}
     </>
   );
 };

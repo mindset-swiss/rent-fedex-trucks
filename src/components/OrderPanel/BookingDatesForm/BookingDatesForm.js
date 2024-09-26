@@ -3,6 +3,7 @@ import { array, bool, func, number, object, string } from 'prop-types';
 import { compose } from 'redux';
 import { Form as FinalForm, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
+import moment from 'moment';
 
 import { FormattedMessage, intlShape, injectIntl } from '../../../util/reactIntl';
 import { required, bookingDatesRequired, composeValidators } from '../../../util/validators';
@@ -414,6 +415,14 @@ const Prev = props => {
   return isDateSameOrAfter(prevMonthDate, currentMonthDate) ? <PrevIcon /> : null;
 };
 
+const releaseDateInTimezone = moment.tz(
+  process.env.REACT_APP_RELEASE_DATE,
+  process.env.REACT_APP_TIMEZONE
+);
+const now = moment.tz(moment(), process.env.REACT_APP_TIMEZONE);
+const releaseDate = moment(process.env.REACT_APP_RELEASE_DATE);
+const formattedReleaseDate = releaseDate.format('MMMM Do');
+
 export const BookingDatesFormComponent = props => {
   const [focusedInput, setFocusedInput] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(getStartOf(TODAY, 'month', props.timeZone));
@@ -536,121 +545,130 @@ export const BookingDatesFormComponent = props => {
         return (
           <Form onSubmit={handleSubmit} className={classes} enforcePagePreloadFor="CheckoutPage">
             <FormSpy subscription={{ values: true }} onChange={onFormSpyChange} />
-            <FieldDateRangeInput
-              className={css.bookingDates}
-              name="bookingDates"
-              isDaily={lineItemUnitType === LINE_ITEM_DAY}
-              startDateId={`${formId}.bookingStartDate`}
-              startDateLabel={intl.formatMessage({
-                id: 'BookingDatesForm.bookingStartTitle',
-              })}
-              startDatePlaceholderText={startDatePlaceholderText}
-              endDateId={`${formId}.bookingEndDate`}
-              endDateLabel={intl.formatMessage({
-                id: 'BookingDatesForm.bookingEndTitle',
-              })}
-              endDatePlaceholderText={endDatePlaceholderText}
-              focusedInput={focusedInput}
-              onFocusedInputChange={onFocusedInputChange}
-              format={v => {
-                const { startDate, endDate } = v || {};
-                // Format the Final Form field's value for the DateRangeInput
-                // DateRangeInput operates on local time zone, but the form uses listing's time zone
-                const formattedStart = startDate
-                  ? timeOfDayFromTimeZoneToLocal(startDate, timeZone)
-                  : startDate;
-                const formattedEnd = endDate
-                  ? timeOfDayFromTimeZoneToLocal(endDate, timeZone)
-                  : endDate;
-                return v ? { startDate: formattedStart, endDate: formattedEnd } : v;
-              }}
-              parse={v => {
-                const { startDate, endDate } = v || {};
-                // Parse the DateRangeInput's value (local noon) for the Final Form
-                // The form expects listing's time zone and start of day aka 00:00
-                const parsedStart = startDate
-                  ? getStartOf(timeOfDayFromLocalToTimeZone(startDate, timeZone), 'day', timeZone)
-                  : startDate;
-                const parsedEnd = endDate
-                  ? getStartOf(timeOfDayFromLocalToTimeZone(endDate, timeZone), 'day', timeZone)
-                  : endDate;
-                return v ? { startDate: parsedStart, endDate: parsedEnd } : v;
-              }}
-              useMobileMargins
-              validate={composeValidators(
-                required(
-                  intl.formatMessage({
-                    id: 'BookingDatesForm.requiredDate',
-                  })
-                ),
-                bookingDatesRequired(startDateErrorMessage, endDateErrorMessage)
-              )}
-              initialVisibleMonth={initialVisibleMonth(startDate || startOfToday, timeZone)}
-              navNext={
-                <Next
-                  currentMonth={currentMonth}
-                  timeZone={timeZone}
-                  dayCountAvailableForBooking={dayCountAvailableForBooking}
-                />
-              }
-              navPrev={<Prev currentMonth={currentMonth} timeZone={timeZone} />}
-              onPrevMonthClick={() => {
-                setCurrentMonth(prevMonth => prevMonthFn(prevMonth, timeZone));
-                onMonthClick(prevMonthFn);
-              }}
-              onNextMonthClick={() => {
-                setCurrentMonth(prevMonth => nextMonthFn(prevMonth, timeZone));
-                onMonthClick(nextMonthFn);
-              }}
-              isDayBlocked={isDayBlocked}
-              isOutsideRange={isOutsideRange}
-              isBlockedBetween={isBlockedBetween(monthlyTimeSlots, timeZone)}
-              disabled={fetchLineItemsInProgress}
-              onClose={event =>
-                setCurrentMonth(getStartOf(event?.startDate ?? startOfToday, 'month', timeZone))
-              }
-            />
-
-            {showEstimatedBreakdown ? (
-              <div className={css.priceBreakdownContainer}>
-                <H6 as="h3" className={css.bookingBreakdownTitle}>
-                  <FormattedMessage id="BookingDatesForm.priceBreakdownTitle" />
-                </H6>
-                <hr className={css.totalDivider} />
-                <EstimatedCustomerBreakdownMaybe
-                  breakdownData={breakdownData}
-                  lineItems={lineItems}
-                  timeZone={timeZone}
-                  currency={unitPrice.currency}
-                  marketplaceName={marketplaceName}
-                  processName={BOOKING_PROCESS_NAME}
-                />
-              </div>
-            ) : null}
-            {fetchLineItemsError ? (
-              <span className={css.sideBarError}>
-                <FormattedMessage id="BookingDatesForm.fetchLineItemsError" />
-              </span>
-            ) : null}
-
-            <div className={css.submitButton}>
-              <PrimaryButton type="submit" inProgress={fetchLineItemsInProgress}>
-                <FormattedMessage id="BookingDatesForm.requestToBook" />
-              </PrimaryButton>
-            </div>
-            <p className={css.finePrint}>
-              {payoutDetailsWarning ? (
-                payoutDetailsWarning
-              ) : (
-                <FormattedMessage
-                  id={
-                    isOwnListing
-                      ? 'BookingDatesForm.ownListing'
-                      : 'BookingDatesForm.youWontBeChargedInfo'
+            {now.isSameOrAfter(releaseDateInTimezone) ? (
+              <>
+                <FieldDateRangeInput
+                  className={css.bookingDates}
+                  name="bookingDates"
+                  isDaily={lineItemUnitType === LINE_ITEM_DAY}
+                  startDateId={`${formId}.bookingStartDate`}
+                  startDateLabel={intl.formatMessage({
+                    id: 'BookingDatesForm.bookingStartTitle',
+                  })}
+                  startDatePlaceholderText={startDatePlaceholderText}
+                  endDateId={`${formId}.bookingEndDate`}
+                  endDateLabel={intl.formatMessage({
+                    id: 'BookingDatesForm.bookingEndTitle',
+                  })}
+                  endDatePlaceholderText={endDatePlaceholderText}
+                  focusedInput={focusedInput}
+                  onFocusedInputChange={onFocusedInputChange}
+                  format={v => {
+                    const { startDate, endDate } = v || {};
+                    // Format the Final Form field's value for the DateRangeInput
+                    // DateRangeInput operates on local time zone, but the form uses listing's time zone
+                    const formattedStart = startDate
+                      ? timeOfDayFromTimeZoneToLocal(startDate, timeZone)
+                      : startDate;
+                    const formattedEnd = endDate
+                      ? timeOfDayFromTimeZoneToLocal(endDate, timeZone)
+                      : endDate;
+                    return v ? { startDate: formattedStart, endDate: formattedEnd } : v;
+                  }}
+                  parse={v => {
+                    const { startDate, endDate } = v || {};
+                    // Parse the DateRangeInput's value (local noon) for the Final Form
+                    // The form expects listing's time zone and start of day aka 00:00
+                    const parsedStart = startDate
+                      ? getStartOf(
+                          timeOfDayFromLocalToTimeZone(startDate, timeZone),
+                          'day',
+                          timeZone
+                        )
+                      : startDate;
+                    const parsedEnd = endDate
+                      ? getStartOf(timeOfDayFromLocalToTimeZone(endDate, timeZone), 'day', timeZone)
+                      : endDate;
+                    return v ? { startDate: parsedStart, endDate: parsedEnd } : v;
+                  }}
+                  useMobileMargins
+                  validate={composeValidators(
+                    required(
+                      intl.formatMessage({
+                        id: 'BookingDatesForm.requiredDate',
+                      })
+                    ),
+                    bookingDatesRequired(startDateErrorMessage, endDateErrorMessage)
+                  )}
+                  initialVisibleMonth={initialVisibleMonth(startDate || startOfToday, timeZone)}
+                  navNext={
+                    <Next
+                      currentMonth={currentMonth}
+                      timeZone={timeZone}
+                      dayCountAvailableForBooking={dayCountAvailableForBooking}
+                    />
+                  }
+                  navPrev={<Prev currentMonth={currentMonth} timeZone={timeZone} />}
+                  onPrevMonthClick={() => {
+                    setCurrentMonth(prevMonth => prevMonthFn(prevMonth, timeZone));
+                    onMonthClick(prevMonthFn);
+                  }}
+                  onNextMonthClick={() => {
+                    setCurrentMonth(prevMonth => nextMonthFn(prevMonth, timeZone));
+                    onMonthClick(nextMonthFn);
+                  }}
+                  isDayBlocked={isDayBlocked}
+                  isOutsideRange={isOutsideRange}
+                  isBlockedBetween={isBlockedBetween(monthlyTimeSlots, timeZone)}
+                  disabled={fetchLineItemsInProgress}
+                  onClose={event =>
+                    setCurrentMonth(getStartOf(event?.startDate ?? startOfToday, 'month', timeZone))
                   }
                 />
-              )}
-            </p>
+
+                {showEstimatedBreakdown ? (
+                  <div className={css.priceBreakdownContainer}>
+                    <H6 as="h3" className={css.bookingBreakdownTitle}>
+                      <FormattedMessage id="BookingDatesForm.priceBreakdownTitle" />
+                    </H6>
+                    <hr className={css.totalDivider} />
+                    <EstimatedCustomerBreakdownMaybe
+                      breakdownData={breakdownData}
+                      lineItems={lineItems}
+                      timeZone={timeZone}
+                      currency={unitPrice.currency}
+                      marketplaceName={marketplaceName}
+                      processName={BOOKING_PROCESS_NAME}
+                    />
+                  </div>
+                ) : null}
+                {fetchLineItemsError ? (
+                  <span className={css.sideBarError}>
+                    <FormattedMessage id="BookingDatesForm.fetchLineItemsError" />
+                  </span>
+                ) : null}
+                <div className={css.submitButton}>
+                  <PrimaryButton type="submit" inProgress={fetchLineItemsInProgress}>
+                    <FormattedMessage id="BookingDatesForm.requestToBook" />
+                  </PrimaryButton>
+                </div>
+                <p className={css.finePrint}>
+                  {payoutDetailsWarning ? (
+                    payoutDetailsWarning
+                  ) : (
+                    <FormattedMessage
+                      id={
+                        isOwnListing
+                          ? 'BookingDatesForm.ownListing'
+                          : 'BookingDatesForm.youWontBeChargedInfo'
+                      }
+                    />
+                  )}
+                </p>
+              </>
+            ) : (
+              <p className={css.finePrint}>Reservations Starting {formattedReleaseDate}</p>
+            )}
           </Form>
         );
       }}
