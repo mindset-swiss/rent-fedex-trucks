@@ -15,7 +15,15 @@ import {
 } from '../../util/userHelpers';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 
-import { H3, H4, Page, UserNav, NamedLink, LayoutSingleColumn } from '../../components';
+import {
+  H3,
+  H4,
+  Page,
+  UserNav,
+  NamedLink,
+  LayoutSingleColumn,
+  ExternalLink,
+} from '../../components';
 
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
@@ -115,7 +123,7 @@ export const ProfileSettingsPageComponent = props => {
   // I.e. the status is active, not pending-approval or banned
   const isUnauthorizedUser = currentUser && !isUserAuthorized(currentUser);
 
-  const { userType, FedExID } = publicData || {};
+  const { userType, FedExID, drivingLicense } = publicData || {};
   const profileImageId = user.profileImage ? user.profileImage.id : null;
   const profileImage = image || { imageId: profileImageId };
   const userTypeConfig = userTypes.find(config => config.userType === userType);
@@ -155,11 +163,18 @@ export const ProfileSettingsPageComponent = props => {
       <FormattedMessage id="ProfileSettingsPage.uploadLicenseTitle" />
     </H4>
 
-    <iframe
-      src={`https://fs10.formsite.com/tKj6Xo/kytrnfzztu/fill?id1=${FedExID}`}
-      title="Upload License Form"
-      className={css.licenseIframe}
-    />
+    <div className={css.licenseActions}>
+      {drivingLicense ? <ExternalLink href={drivingLicense}>
+        <FormattedMessage id="ProfileSettingsPage.viewLicensButton" />
+      </ExternalLink> : null}
+
+      <ExternalLink
+        target="_self"
+        href={`https://fs10.formsite.com/tKj6Xo/kytrnfzztu/fill?id1=${FedExID}`}
+      >
+        <FormattedMessage id={drivingLicense ? "ProfileSettingsPage.reuploadLicensButton" : "ProfileSettingsPage.uploadLicensButton"} />
+      </ExternalLink>
+    </div>
   </div>;
 
   const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
