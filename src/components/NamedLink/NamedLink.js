@@ -40,6 +40,8 @@ export const NamedLinkComponent = props => {
   // Link props
   const { to, children } = props;
   const pathname = pathByRouteName(name, routeConfiguration, params);
+  const formSiteUrl = 'https://fs10.formsite.com/tKj6Xo/2m3u38ctor/index';
+
   const { match } = props;
   const active = match.url && match.url === pathname;
 
@@ -50,12 +52,19 @@ export const NamedLinkComponent = props => {
     style,
     title,
   };
-
-  return (
-    <Link onMouseOver={onOver} onTouchStart={onOver} to={{ pathname, ...to }} {...aElemProps}>
-      {children}
-    </Link>
-  );
+  if (pathname === '/l/new') {
+    return (
+      <a onMouseOver={onOver} onTouchStart={onOver} href={formSiteUrl} {...aElemProps}>
+        {children}
+      </a>
+    );
+  } else {
+    return (
+      <Link onMouseOver={onOver} onTouchStart={onOver} to={{ pathname, ...to }} {...aElemProps}>
+        {children}
+      </Link>
+    );
+  }
 };
 
 NamedLinkComponent.defaultProps = {
