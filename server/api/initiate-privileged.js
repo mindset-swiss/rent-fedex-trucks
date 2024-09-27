@@ -6,6 +6,7 @@ const {
   serialize,
   fetchCommission,
 } = require('../api-util/sdk');
+const { getProviderCommission } = require('../api-util/commissionUtils');
 
 module.exports = (req, res) => {
   const { isSpeculative, orderData, bodyParams, queryParams } = req.body;
@@ -13,15 +14,26 @@ module.exports = (req, res) => {
   const sdk = getSdk(req, res);
   let lineItems = null;
 
-  const listingPromise = () => sdk.listings.show({ id: bodyParams?.params?.listingId });
+  const listingPromise = () =>
+    sdk.listings.show({ id: bodyParams?.params?.listingId, include: ['author'] });
 
   Promise.all([listingPromise(), fetchCommission(sdk)])
     .then(([showListingResponse, fetchAssetsResponse]) => {
       const listing = showListingResponse.data.data;
       const commissionAsset = fetchAssetsResponse.data.data[0];
+      const authorType =
+        showListingResponse.data?.included[0]?.attributes?.profile?.publicData?.userType;
 
-      const { providerCommission, customerCommission } =
+      const providerCommission = getProviderCommission(
+        showListingResponse,
+        authorType,
+        commissionAsset
+      );
+      const { customerCommission } =
         commissionAsset?.type === 'jsonAsset' ? commissionAsset.attributes.data : {};
+
+      // const { providerCommission, customerCommission } =
+      //   commissionAsset?.type === 'jsonAsset' ? commissionAsset.attributes.data : {};
 
       lineItems = transactionLineItems(
         listing,
