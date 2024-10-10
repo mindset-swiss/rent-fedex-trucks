@@ -44,8 +44,8 @@ module.exports = async (req, res) => {
         const year = req.body.items.find(i => i.id == Mapper["year"]).values[0].value;
         const Make = req.body.items.find(i => i.id == Mapper["Make"]).values[0].value;
         const Model = req.body.items.find(i => i.id == Mapper["Model"]).value;
-        const Box_length = req.body.items.find(i => i.id == Mapper["Box_length"]).value;
-        const Miles = req.body.items.find(i => i.id == Mapper["Miles"]).value;
+        const Box_length = Number(req.body.items.find(i => i.id == Mapper["Box_length"]).value);
+        const Miles = Number(req.body.items.find(i => i.id == Mapper["Miles"]).value);
         const Plate_number = req.body.items.find(i => i.id == Mapper["Plate_number"]).value;
         const VIN = req.body.items.find(i => i.id == Mapper["VIN"]).value;
         const categoryLevel1 = req.body.items.find(i => i.id == Mapper["categoryLevel1"]).values[0].value;
@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
         const RegistrationCopy = req.body.items.find(i => i.id == Mapper["RegistrationCopy"]).values;
         const ProofOfInsurance = req.body.items.find(i => i.id == Mapper["ProofOfInsurance"]).values;
         const TruckPictures = req.body.items.find(i => i.id == Mapper["TruckPictures"]).values;
-        const GVWR = req.body.items.find(i => i.id == Mapper["GVWR"]).value;
+        const GVWR = Number(req.body.items.find(i => i.id == Mapper["GVWR"]).value);
         const price = req.body.items.find(i => i.id == Mapper["price"]).value;
         const availabilityDays = req.body.items.find(i => i.id == Mapper["availability"])?.values || [];
 
