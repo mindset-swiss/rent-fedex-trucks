@@ -53,7 +53,7 @@ const CustomListingFields = props => {
                 publicData[key] && (
                   <li key={key} className={css.detailsRow}>
                     <span className={css.detailLabel}>
-                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                      {key.charAt(0).toUpperCase() + key.replaceAll("_", " ").slice(1)}
                     </span>
                     <span>{publicData[key]}</span>
                   </li>
