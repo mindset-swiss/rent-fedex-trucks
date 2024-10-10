@@ -34,14 +34,14 @@ const SectionDetailsMaybe = props => {
       return schemaType === 'enum'
         ? filteredConfigs.concat({ key, value: optionConfig?.label, label })
         : schemaType === 'boolean'
-        ? filteredConfigs.concat({ key, value: getBooleanMessage(value), label })
-        : schemaType === 'long'
-        ? filteredConfigs.concat({ key, value, label })
-        : filteredConfigs;
+          ? filteredConfigs.concat({ key, value: getBooleanMessage(value), label })
+          : schemaType === 'long'
+            ? filteredConfigs.concat({ key, value, label })
+            : filteredConfigs;
     }
     return filteredConfigs;
   };
-
+  return null
   const existingUserFields = userFieldConfig.reduce(pickUserFields, []);
 
   return existingUserFields.length > 0 ? (
