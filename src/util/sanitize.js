@@ -21,17 +21,17 @@ const sanitizeText = str =>
   str == null
     ? str
     : typeof str === 'string'
-    ? str.replace(ESCAPE_TEXT_REGEXP, ch => ESCAPE_TEXT_REPLACEMENTS[ch])
-    : '';
+      ? str.replace(ESCAPE_TEXT_REGEXP, ch => ESCAPE_TEXT_REPLACEMENTS[ch])
+      : '';
 
 // Enum and multi-enum work with predefined option configuration
 const sanitizeEnum = (str, options) => (options.map(o => `${o.option}`).includes(str) ? str : null);
 const sanitizeMultiEnum = (arr, options) =>
   Array.isArray(arr)
     ? arr.reduce((ret, value) => {
-        const enumValue = sanitizeEnum(value, options);
-        return enumValue ? [...ret, enumValue] : ret;
-      }, [])
+      const enumValue = sanitizeEnum(value, options);
+      return enumValue ? [...ret, enumValue] : ret;
+    }, [])
     : [];
 const sanitizeLong = lng => (lng == null || typeof lng === 'number' ? lng : null);
 const sanitizeBoolean = bool => (bool == null || typeof bool === 'boolean' ? bool : null);
@@ -111,15 +111,15 @@ export const sanitizeUser = (entity, config = {}) => {
 
   const profileMaybe = profile
     ? {
-        profile: {
-          abbreviatedName: sanitizeText(abbreviatedName),
-          displayName: sanitizeText(displayName),
-          bio: sanitizeText(bio),
-          ...sanitizePublicData(publicData),
-          ...sanitizeMetadata(metadata),
-          ...restProfile,
-        },
-      }
+      profile: {
+        abbreviatedName: sanitizeText(abbreviatedName),
+        displayName: sanitizeText(displayName),
+        bio: sanitizeText(bio),
+        ...sanitizePublicData(publicData),
+        ...sanitizeMetadata(metadata),
+        ...restProfile,
+      },
+    }
     : {};
   const attributesMaybe = attributes ? { attributes: { ...profileMaybe, ...restAttributes } } : {};
 
@@ -138,14 +138,14 @@ const sanitizedExtendedDataFields = (value, config) => {
     schemaType === 'text'
       ? sanitizeText(value)
       : schemaType === 'enum'
-      ? sanitizeEnum(value, enumOptions)
-      : schemaType === 'multi-enum'
-      ? sanitizeMultiEnum(value, enumOptions)
-      : schemaType === 'long'
-      ? sanitizeLong(value)
-      : schemaType === 'boolean'
-      ? sanitizeBoolean(value)
-      : null;
+        ? sanitizeEnum(value, enumOptions)
+        : schemaType === 'multi-enum'
+          ? sanitizeMultiEnum(value, enumOptions)
+          : schemaType === 'long'
+            ? sanitizeLong(value)
+            : schemaType === 'boolean'
+              ? sanitizeBoolean(value)
+              : null;
 
   return sanitized;
 };
@@ -172,12 +172,12 @@ const sanitizeConfiguredPublicData = (publicData, config = {}) => {
     const sanitizedValue = knownKeysWithString.includes(key)
       ? sanitizeText(value)
       : foundListingFieldConfig
-      ? sanitizedExtendedDataFields(value, foundListingFieldConfig)
-      : foundUserFieldConfig
-      ? sanitizedExtendedDataFields(value, foundUserFieldConfig)
-      : typeof value === 'string'
-      ? sanitizeText(value)
-      : value;
+        ? sanitizedExtendedDataFields(value, foundListingFieldConfig)
+        : foundUserFieldConfig
+          ? sanitizedExtendedDataFields(value, foundUserFieldConfig)
+          : typeof value === 'string'
+            ? sanitizeText(value)
+            : value;
 
     return {
       ...sanitized,
@@ -205,22 +205,22 @@ export const sanitizeListing = (entity, config = {}) => {
   const sanitizePublicData = publicData => {
     // Here's an example how you could sanitize location and rules from publicData:
     // TODO: If you add public data, you should probably sanitize it here.
-    const { location, ...restPublicData } = publicData || {};
+    const { location, Box_length, GVWR, Miles, ForSalePrice, ...restPublicData } = publicData || {};
     const locationMaybe = location ? { location: sanitizeLocation(location) } : {};
     const sanitizedConfiguredPublicData = sanitizeConfiguredPublicData(restPublicData, config);
 
-    return publicData ? { publicData: { ...locationMaybe, ...sanitizedConfiguredPublicData } } : {};
+    return publicData ? { publicData: { Box_length, GVWR, Miles, ForSalePrice, ...locationMaybe, ...sanitizedConfiguredPublicData } } : {};
   };
 
   const attributesMaybe = attributes
     ? {
-        attributes: {
-          title: sanitizeText(title),
-          description: sanitizeText(description),
-          ...sanitizePublicData(publicData),
-          ...restAttributes,
-        },
-      }
+      attributes: {
+        title: sanitizeText(title),
+        description: sanitizeText(description),
+        ...sanitizePublicData(publicData),
+        ...restAttributes,
+      },
+    }
     : {};
 
   return { ...attributesMaybe, ...restEntity };

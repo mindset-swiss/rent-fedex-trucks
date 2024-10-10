@@ -48,7 +48,7 @@ const CustomListingFields = props => {
       <section className={css.sectionText}>
         {publicData ? (
           <ul className={css.details}>
-            {['year', 'Make', 'Model', 'Box_length', 'GVWR'].map(
+            {['year', 'Make', 'Model', 'Box_length', 'GVWR', 'Miles', 'Miles2', 'ForSalePrice'].map(
               key =>
                 publicData[key] && (
                   <li key={key} className={css.detailsRow}>
