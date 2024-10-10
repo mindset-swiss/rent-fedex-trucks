@@ -7,6 +7,7 @@ import { FormattedMessage } from '../../../../../util/reactIntl';
 import { ExternalLink, NamedLink } from '../../../../../components';
 
 import css from './PriorityLinks.module.css';
+import { useSelector } from 'react-redux';
 
 /**
  * Create component that shows only a single "Post a new listing" link.
@@ -15,9 +16,16 @@ import css from './PriorityLinks.module.css';
  * @returns div with only one link inside.
  */
 export const CreateListingMenuLink = props => {
+  const { user } = useSelector(state => state)
+  const { firstName, lastName, displayName, publicData } = user?.currentUser?.attributes?.profile || {}
+  const { FedExID } = publicData || {}
+  let formSiteUrl = 'https://fs10.formsite.com/tKj6Xo/2m3u38ctor/index';
+  if (firstName && lastName && FedExID && displayName) {
+    formSiteUrl = `https://fs10.formsite.com/tKj6Xo/2m3u38ctor/fill?id14=${firstName}&id15=${lastName}&id6=${displayName}&id16=${FedExID}`
+  }
   return (
     <div className={props.customLinksMenuClass}>
-      <NamedLink name="NewListingPage" className={classNames(css.priorityLink, css.highlight)}>
+      <NamedLink name="NewListingPage" className={classNames(css.priorityLink, css.highlight)} url={formSiteUrl}>
         <span className={css.priorityLinkLabel}>
           <FormattedMessage id="TopbarDesktop.createListing" />
         </span>
@@ -87,16 +95,16 @@ const PriorityLinks = props => {
   const styleWrapper = !!isMeasured
     ? {}
     : {
-        style: {
-          position: 'absolute',
-          top: '-2000px',
-          left: '-2000px',
-          width: '100%',
-          height: 'var(--topbarHeightDesktop)',
-          display: 'flex',
-          flexDirection: 'row',
-        },
-      };
+      style: {
+        position: 'absolute',
+        top: '-2000px',
+        left: '-2000px',
+        width: '100%',
+        height: 'var(--topbarHeightDesktop)',
+        display: 'flex',
+        flexDirection: 'row',
+      },
+    };
   const linkConfigs = isMeasured ? priorityLinks : links;
 
   return isMeasured || isServer ? (
