@@ -42,7 +42,14 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       return { processName, processState, showDetailCardHeadings: true };
     })
     .cond([states.PREAUTHORIZED, CUSTOMER], () => {
-      return { processName, processState, showDetailCardHeadings: true, showExtraInfo: true };
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showExtraInfo: true,
+        showActionButtons: true,
+        primaryButtonProps: actionButtonProps(transitions.CANCEL_CUSTOMER, CUSTOMER),
+      };
     })
     .cond([states.PREAUTHORIZED, PROVIDER], () => {
       const primary = isCustomerBanned ? null : actionButtonProps(transitions.ACCEPT, PROVIDER);
@@ -57,6 +64,13 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.ACCEPTED, CUSTOMER], () => {
+      const bookingStartDate = new Date(transaction?.booking.attributes.start)
+      const currentDate = new Date()
+      const noOfHoursBefore = 72
+
+      const cancelCutoffDate = new Date(bookingStartDate.setHours(bookingStartDate.getHours() - noOfHoursBefore))
+      const ableToCancel = cancelCutoffDate > currentDate
+
       return {
         processName,
         processState,
@@ -71,7 +85,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
           buttonText: "Start Booking Form",
           startEndForm: true
         },
-        secondaryButtonProps: {
+        secondaryButtonProps: ableToCancel && isCustomer ? actionButtonProps(transitions.CANCEL_CUSTOMER_2, CUSTOMER) : {
           onAction: () => {
             const formType = 2
             const url = `https://fs10.formsite.com/tKj6Xo/azkznkrtai/fill?id2=${transaction.id.uuid}&id15=${formType}`

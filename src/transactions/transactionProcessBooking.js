@@ -36,6 +36,8 @@ export const transitions = {
   // When the provider accepts or declines a transaction from the
   // SalePage, it is transitioned with the accept or decline transition.
   ACCEPT: 'transition/accept',
+  CANCEL_CUSTOMER: 'transition/cancel-customer',
+  CANCEL_CUSTOMER_2: 'transition/cancel-customer-2',
   DECLINE: 'transition/decline',
 
   // The operator can accept or decline the offer on behalf of the provider
@@ -136,6 +138,7 @@ export const graph = {
         [transitions.EXPIRE]: states.EXPIRED,
         [transitions.ACCEPT]: states.ACCEPTED,
         [transitions.OPERATOR_ACCEPT]: states.ACCEPTED,
+        [transitions.CANCEL_CUSTOMER]: states.CANCELED,
       },
     },
 
@@ -144,6 +147,7 @@ export const graph = {
     [states.ACCEPTED]: {
       on: {
         [transitions.CANCEL]: states.CANCELED,
+        [transitions.CANCEL_CUSTOMER_2]: states.CANCELED,
         [transitions.COMPLETE]: states.DELIVERED,
         [transitions.OPERATOR_COMPLETE]: states.DELIVERED,
       },
