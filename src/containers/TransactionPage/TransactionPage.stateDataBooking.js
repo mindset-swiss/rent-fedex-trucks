@@ -56,7 +56,51 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         secondaryButtonProps: secondary,
       };
     })
-    .cond([states.DELIVERED, _], () => {
+    .cond([states.ACCEPTED, CUSTOMER], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        primaryButtonProps: {
+          onAction: () => {
+            const formType = 1
+            const url = `https://fs10.formsite.com/tKj6Xo/azkznkrtai/fill?id2=${transaction.id.uuid}&id15=${formType}`
+            window.open(url, "_top")
+          },
+          buttonText: "Start Booking Form",
+          startEndForm: true
+        },
+        secondaryButtonProps: {
+          onAction: () => {
+            const formType = 2
+            const url = `https://fs10.formsite.com/tKj6Xo/azkznkrtai/fill?id2=${transaction.id.uuid}&id15=${formType}`
+            window.open(url, "_top")
+          },
+          buttonText: "End Booking Form",
+          startEndForm: true
+        },
+      };
+    })
+    .cond([states.ACCEPTED, PROVIDER], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        primaryButtonProps: {
+          buttonText: "Start Booking Form",
+          startEndForm: true,
+          defaultHidden: true,
+        },
+        secondaryButtonProps: {
+          buttonText: "End Booking Form",
+          startEndForm: true,
+          defaultHidden: true,
+        },
+      };
+    })
+    .cond([states.DELIVERED, PROVIDER], () => {
       return {
         processName,
         processState,
@@ -64,6 +108,25 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         showReviewAsFirstLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+      };
+    })
+    .cond([states.DELIVERED, CUSTOMER], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showReviewAsFirstLink: true,
+        showActionButtons: true,
+        primaryButtonProps: leaveReviewProps,
+        secondaryButtonProps: {
+          onAction: () => {
+            const formType = 2
+            const url = `https://fs10.formsite.com/tKj6Xo/azkznkrtai/fill?id2=${transaction.id.uuid}&id15=${formType}`
+            window.open(url, "_top")
+          },
+          buttonText: "End Booking Form",
+          startEndForm: true
+        },
       };
     })
     .cond([states.REVIEWED_BY_PROVIDER, CUSTOMER], () => {
@@ -74,6 +137,14 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         showReviewAsSecondLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+        secondaryButtonProps: {
+          onAction: () => {
+            const formType = 2
+            const url = `https://fs10.formsite.com/tKj6Xo/azkznkrtai/fill?id2=${transaction.id.uuid}&id15=${formType}`
+            window.open(url, "_top")
+          },
+          buttonText: "End Booking Form"
+        },
       };
     })
     .cond([states.REVIEWED_BY_CUSTOMER, PROVIDER], () => {

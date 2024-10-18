@@ -48,12 +48,12 @@ const CustomListingFields = props => {
       <section className={css.sectionText}>
         {publicData ? (
           <ul className={css.details}>
-            {['year', 'Make', 'Model', 'Box_length', 'GVWR', 'Miles', 'Miles2', 'ForSalePrice'].map(
+            {['year', 'Make', 'Model', 'Box_length', 'GVWR', 'Miles', 'Miles2', 'ForSalePrice', 'extras'].map(
               key =>
                 publicData[key] && (
                   <li key={key} className={css.detailsRow}>
                     <span className={css.detailLabel}>
-                      {key.charAt(0).toUpperCase() + key.replaceAll("_", " ").slice(1)}
+                      {key == "ForSalePrice" ? "Selling Price (USD)" : key.charAt(0).toUpperCase() + key.replaceAll("_", " ").slice(1)}
                     </span>
                     <span>{publicData[key]}</span>
                   </li>
