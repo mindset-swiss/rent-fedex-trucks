@@ -21,11 +21,11 @@ module.exports = (req, res) => {
     .then(([showListingResponse, fetchAssetsResponse]) => {
       const listing = showListingResponse.data.data;
       const commissionAsset = fetchAssetsResponse.data.data[0];
-      const authorType =
-        showListingResponse.data?.included[0]?.attributes?.profile?.publicData?.userType;
+      const authorType = showListingResponse.data?.included[0]?.attributes?.profile?.publicData?.userType;
+      const authorCommission = showListingResponse.data?.included[0]?.attributes?.profile?.publicData?.commision;
 
       const providerCommission = getProviderCommission(
-        showListingResponse,
+        authorCommission,
         authorType,
         commissionAsset
       );
