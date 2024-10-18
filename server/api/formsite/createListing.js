@@ -33,6 +33,7 @@ const Mapper = {
     GVWR: '21',
     price: '19',
     availability: '20',
+    extras: '22',
 };
 
 module.exports = async (req, res) => {
@@ -57,6 +58,7 @@ module.exports = async (req, res) => {
         const GVWR = Number(req.body.items.find(i => i.id == Mapper["GVWR"]).value);
         const price = req.body.items.find(i => i.id == Mapper["price"]).value;
         const availabilityDays = req.body.items.find(i => i.id == Mapper["availability"])?.values || [];
+        const extras = req.body.items.find(i => i.id == Mapper["extras"])?.values?.join(", ") || "";
 
         const title = `${year} ${Make} ${Model} ${Box_length} ${categoryLevel1}`;
         const publicDataItems = {
@@ -78,6 +80,7 @@ module.exports = async (req, res) => {
             ProofOfInsurance,
             TruckPictures,
             GVWR,
+            extras,
         };
 
         if (FedExID) {
