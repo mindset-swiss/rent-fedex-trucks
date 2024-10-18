@@ -1,0 +1,1 @@
+A booking request was cancelled by the customer

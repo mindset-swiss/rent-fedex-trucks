@@ -55,6 +55,16 @@
     {:name :action/stripe-capture-payment-intent}],
    :from :state/preauthorized,
    :to :state/accepted}
+  {:name :transition/cancel-customer,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+    ;; Keep this action last in the list of actions for
+    ;; the transition
+    {:name :action/decline-booking}],
+    :from :state/preauthorized,
+    :to :state/cancelled}
   {:name :transition/decline,
    :actor :actor.role/provider,
    :actions
@@ -99,6 +109,16 @@
    :actions [{:name :action/stripe-create-payout}],
    :from :state/accepted,
    :to :state/delivered}
+  {:name :transition/cancel-customer-2,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+    ;; Keep this action last in the list of actions for
+    ;; the transition
+    {:name :action/cancel-booking}],
+    :from :state/accepted,
+    :to :state/cancelled}
   {:name :transition/operator-complete,
    :actor :actor.role/operator,
    :actions [{:name :action/stripe-create-payout}],
@@ -184,6 +204,14 @@
    :on :transition/operator-decline,
    :to :actor.role/customer,
    :template :booking-declined-request}
+  {:name :notification/booking-cancelled-to-customer,
+   :on :transition/cancel-customer,
+   :to :actor.role/provider,
+   :template :booking-cancelled-customer} 
+  {:name :notification/booking-cancelled-to-customer-2,
+   :on :transition/cancel-customer-2,
+   :to :actor.role/provider,
+   :template :booking-cancelled-customer} 
   {:name :notification/booking-operator-declined-request-to-provider,
    :on :transition/operator-decline,
    :to :actor.role/provider,

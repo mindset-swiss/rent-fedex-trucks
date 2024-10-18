@@ -519,7 +519,7 @@
   "NoAccessPage.postListings.content": "You need to receive publishing rights from the {marketplaceName} team.",
   "NoAccessPage.userPendingApproval.schemaTitle": "No user approval",
   "NoAccessPage.userPendingApproval.heading": "Your account is waiting for approval",
-  "NoAccessPage.userPendingApproval.content": "You need approval from the {marketplaceName} team to get access to the marketplace.",  
+  "NoAccessPage.userPendingApproval.content": "You need approval from the {marketplaceName} team to get access to the marketplace.",
   "OrderBreakdown.baseUnitDay": "{unitPrice} x {quantity, number} {quantity, plural, one {day} other {days}}",
   "OrderBreakdown.baseUnitNight": "{unitPrice} x {quantity, number} {quantity, plural, one {night} other {nights}}",
   "OrderBreakdown.baseUnitHour": "{unitPrice} x {quantity, number} {quantity, plural, one {hour} other {hours}}",
@@ -997,7 +997,7 @@
   "TermsModal.body.boxLength": "Box length",
   "TermsModal.body.gvwr": "GVWR",
   "TermsModal.body.host": "HOST (CAR OWNER OR AUTHORIZED REPRESENTATIVE)",
-  "TermsModal.body.plate":"LICENSE PLATE",
+  "TermsModal.body.plate": "LICENSE PLATE",
   "TermsModal.body.tripStart": "TRIP START",
   "TermsModal.body.tripEnd": "TRIP END",
   "TermsModal.body.pickupLocation": "PICKUP LOCATION",
@@ -1183,5 +1183,7 @@
   "UserDisplayName.deleted": "Deleted user",
   "UserNav.accountSettings": "Account settings",
   "UserNav.profileSettings": "Profile settings",
-  "UserNav.yourListings": "Your listings"
+  "UserNav.yourListings": "Your listings",
+  "TransactionPage.default-booking.customer.transition-cancel-customer.actionButton": "Cancel",
+  "TransactionPage.default-booking.customer.transition-cancel-customer-2.actionButton": "Cancel"
 }
