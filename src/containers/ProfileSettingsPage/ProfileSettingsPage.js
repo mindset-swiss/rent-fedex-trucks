@@ -170,7 +170,7 @@ export const ProfileSettingsPageComponent = props => {
 
       <ExternalLink
         target="_self"
-        href={`https://fs10.formsite.com/tKj6Xo/6mdvyvznco/fill?id1=${FedExID}`}
+        href={`https://fs10.formsite.com/tKj6Xo/kytrnfzztu/fill?id1=${FedExID}`}
       >
         <FormattedMessage id={drivingLicense ? "ProfileSettingsPage.reuploadLicensButton" : "ProfileSettingsPage.uploadLicensButton"} />
       </ExternalLink>
@@ -189,7 +189,7 @@ const uploadInsuranceContainer = <div className={css.uploadLicenseContainer}>
 
   <ExternalLink
     target="_self"
-    href={`https://fs10.formsite.com/tKj6Xo/kytrnfzztu/fill?id1=${FedExID}`}
+    href={`https://fs10.formsite.com/tKj6Xo/6mdvyvznco/fill?id1=${FedExID}`}
   >
     <FormattedMessage id={insurance ? "ProfileSettingsPage.reuploadInsuranceButton" : "ProfileSettingsPage.uploadInsuranceButton"} />
   </ExternalLink>
