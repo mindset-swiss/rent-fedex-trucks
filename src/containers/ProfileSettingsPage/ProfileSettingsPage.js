@@ -123,7 +123,7 @@ export const ProfileSettingsPageComponent = props => {
   // I.e. the status is active, not pending-approval or banned
   const isUnauthorizedUser = currentUser && !isUserAuthorized(currentUser);
 
-  const { userType, FedExID, drivingLicense } = publicData || {};
+  const { userType, FedExID, drivingLicense, insurance } = publicData || {};
   const profileImageId = user.profileImage ? user.profileImage.id : null;
   const profileImage = image || { imageId: profileImageId };
   const userTypeConfig = userTypes.find(config => config.userType === userType);
@@ -170,12 +170,31 @@ export const ProfileSettingsPageComponent = props => {
 
       <ExternalLink
         target="_self"
-        href={`https://fs10.formsite.com/tKj6Xo/kytrnfzztu/fill?id1=${FedExID}`}
+        href={`https://fs10.formsite.com/tKj6Xo/6mdvyvznco/fill?id1=${FedExID}`}
       >
         <FormattedMessage id={drivingLicense ? "ProfileSettingsPage.reuploadLicensButton" : "ProfileSettingsPage.uploadLicensButton"} />
       </ExternalLink>
     </div>
   </div>;
+
+const uploadInsuranceContainer = <div className={css.uploadLicenseContainer}>
+<H4 as="h2">
+  <FormattedMessage id="ProfileSettingsPage.uploadInsuranceTitle" />
+</H4>
+
+<div className={css.licenseActions}>
+  {insurance ? <ExternalLink href={insurance}>
+    <FormattedMessage id="ProfileSettingsPage.viewInsuranceButton" />
+  </ExternalLink> : null}
+
+  <ExternalLink
+    target="_self"
+    href={`https://fs10.formsite.com/tKj6Xo/kytrnfzztu/fill?id1=${FedExID}`}
+  >
+    <FormattedMessage id={insurance ? "ProfileSettingsPage.reuploadInsuranceButton" : "ProfileSettingsPage.uploadInsuranceButton"} />
+  </ExternalLink>
+</div>
+</div>;
 
   const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 
@@ -200,6 +219,7 @@ export const ProfileSettingsPageComponent = props => {
           </div>
           {profileSettingsForm}
           {uploadLicenseContainer}
+          {uploadInsuranceContainer}
         </div>
       </LayoutSingleColumn>
     </Page>
