@@ -21,7 +21,8 @@ const Mapper = {
     Make: '2',
     Model: '3',
     Box_length: '4',
-    Miles: '12',
+    Miles: '23',
+    Miles2: '24',
     Plate_number: '13',
     VIN: '5',
     categoryLevel1: '17',
@@ -46,7 +47,7 @@ module.exports = async (req, res) => {
         const Make = req.body.items.find(i => i.id == Mapper["Make"]).values[0].value;
         const Model = req.body.items.find(i => i.id == Mapper["Model"]).value;
         const Box_length = Number(req.body.items.find(i => i.id == Mapper["Box_length"]).value);
-        const Miles = Number(req.body.items.find(i => i.id == Mapper["Miles"]).value);
+        const Miles = req.body.items.find(i => i.id == Mapper["Miles"]).value? Number(req.body.items.find(i => i.id == Mapper["Miles"]).value):Number(req.body.items.find(i => i.id == Mapper["Miles2"]).value);
         const Plate_number = req.body.items.find(i => i.id == Mapper["Plate_number"]).value;
         const VIN = req.body.items.find(i => i.id == Mapper["VIN"]).value;
         const categoryLevel1 = req.body.items.find(i => i.id == Mapper["categoryLevel1"]).values[0].value;
