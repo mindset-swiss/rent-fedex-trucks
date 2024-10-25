@@ -18,9 +18,8 @@ const { Money } = sdkTypes;
 
 const getInitialValues = params => {
   const { listing } = params;
-  const { price } = listing?.attributes || {};
-
-  return { price };
+  const { price, publicData } = listing?.attributes || {};
+  return { price, discount: publicData?.discount || [] };
 };
 
 const EditListingPricingPanel = props => {
@@ -68,11 +67,14 @@ const EditListingPricingPanel = props => {
           className={css.form}
           initialValues={initialValues}
           onSubmit={values => {
-            const { price } = values;
+            const { price, discount } = values;
 
             // New values for listing attributes
             const updateValues = {
               price,
+              publicData: {
+                discount,
+              }
             };
             onSubmit(updateValues);
           }}

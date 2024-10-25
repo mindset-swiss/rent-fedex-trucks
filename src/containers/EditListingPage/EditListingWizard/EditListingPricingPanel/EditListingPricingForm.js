@@ -17,6 +17,7 @@ import { Button, Form, FieldCurrencyInput, FieldTextInput } from '../../../../co
 
 // Import modules from this directory
 import css from './EditListingPricingForm.module.css';
+import DiscountOptions from './DiscountOptions';
 
 const { Money } = sdkTypes;
 
@@ -60,6 +61,8 @@ export const EditListingPricingFormComponent = props => (
         updated,
         updateInProgress,
         fetchErrors,
+        form,
+        values,
       } = formRenderProps;
 
       const priceValidators = getPriceValidators(
@@ -98,6 +101,11 @@ export const EditListingPricingFormComponent = props => (
             placeholder={intl.formatMessage({ id: 'EditListingPricingForm.priceInputPlaceholder' })}
             currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
             validate={priceValidators}
+          />
+
+          <DiscountOptions
+            form={form}
+            values={values}
           />
 
           <Button
