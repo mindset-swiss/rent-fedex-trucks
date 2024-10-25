@@ -27,26 +27,26 @@ const getItemQuantityAndLineItems = (orderData, publicData, currency) => {
   // Calculate shipping fee if applicable
   const shippingFee = isShipping
     ? calculateShippingFee(
-        shippingPriceInSubunitsOneItem,
-        shippingPriceInSubunitsAdditionalItems,
-        currency,
-        quantity
-      )
+      shippingPriceInSubunitsOneItem,
+      shippingPriceInSubunitsAdditionalItems,
+      currency,
+      quantity
+    )
     : null;
 
   // Add line-item for given delivery method.
   // Note: by default, pickup considered as free.
   const deliveryLineItem = !!shippingFee
     ? [
-        {
-          code: 'line-item/shipping-fee',
-          unitPrice: shippingFee,
-          quantity: 1,
-          includeFor: ['customer', 'provider'],
-        },
-      ]
+      {
+        code: 'line-item/shipping-fee',
+        unitPrice: shippingFee,
+        quantity: 1,
+        includeFor: ['customer', 'provider'],
+      },
+    ]
     : isPickup
-    ? [
+      ? [
         {
           code: 'line-item/pickup-fee',
           unitPrice: new Money(0, currency),
@@ -54,7 +54,7 @@ const getItemQuantityAndLineItems = (orderData, publicData, currency) => {
           includeFor: ['customer', 'provider'],
         },
       ]
-    : [];
+      : [];
 
   return { quantity, extraLineItems: deliveryLineItem };
 };
@@ -141,10 +141,10 @@ exports.transactionLineItems = (listing, orderData, providerCommission, customer
     unitType === 'item'
       ? getItemQuantityAndLineItems(orderData, publicData, currency)
       : unitType === 'hour'
-      ? getHourQuantityAndLineItems(orderData)
-      : ['day', 'night'].includes(unitType)
-      ? getDateRangeQuantityAndLineItems(orderData, code)
-      : {};
+        ? getHourQuantityAndLineItems(orderData)
+        : ['day', 'night'].includes(unitType)
+          ? getDateRangeQuantityAndLineItems(orderData, code)
+          : {};
 
   const { quantity, extraLineItems } = quantityAndExtraLineItems;
 
@@ -190,13 +190,13 @@ exports.transactionLineItems = (listing, orderData, providerCommission, customer
   // orderPrice - providerCommission = providerPayout
   const providerCommissionMaybe = hasCommissionPercentage(providerCommission)
     ? [
-        {
-          code: 'line-item/provider-commission',
-          unitPrice: calculateTotalFromLineItems([order]),
-          percentage: getNegation(providerCommission.percentage),
-          includeFor: ['provider'],
-        },
-      ]
+      {
+        code: 'line-item/provider-commission',
+        unitPrice: calculateTotalFromLineItems([order]),
+        percentage: getNegation(providerCommission.percentage),
+        includeFor: ['provider'],
+      },
+    ]
     : [];
 
   // The customer commission is what the customer pays for the transaction, and
@@ -204,20 +204,37 @@ exports.transactionLineItems = (listing, orderData, providerCommission, customer
   // orderPrice + customerCommission = customerPayin
   const customerCommissionMaybe = hasCommissionPercentage(customerCommission)
     ? [
-        {
-          code: 'line-item/customer-commission',
-          unitPrice: calculateTotalFromLineItems([order]),
-          percentage: customerCommission.percentage,
-          includeFor: ['customer'],
-        },
-      ]
+      {
+        code: 'line-item/customer-commission',
+        unitPrice: calculateTotalFromLineItems([order]),
+        percentage: customerCommission.percentage,
+        includeFor: ['customer'],
+      },
+    ]
     : [];
+
+  let discount = null
+  publicData?.discount.forEach(({ minDays, percentage }) => {
+    if (quantity > minDays) {
+      discount = percentage
+    }
+  })
+
+  const discountMaybe = discount ? [
+    {
+      code: 'line-item/long-rental-discount',
+      unitPrice: calculateTotalFromLineItems([order]),
+      percentage: getNegation(discount),
+      includeFor: ['provider', 'customer'],
+    },
+  ] : []
 
   // Let's keep the base price (order) as first line item and provider and customer commissions as last.
   // Note: the order matters only if OrderBreakdown component doesn't recognize line-item.
   const lineItems = [
     order,
     ...extraLineItems,
+    ...discountMaybe,
     ...providerCommissionMaybe,
     ...customerCommissionMaybe,
   ];
