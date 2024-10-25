@@ -123,7 +123,7 @@ export const ProfileSettingsPageComponent = props => {
   // I.e. the status is active, not pending-approval or banned
   const isUnauthorizedUser = currentUser && !isUserAuthorized(currentUser);
 
-  const { userType, FedExID, drivingLicense, insurance } = publicData || {};
+  const { userType, FedExID, drivingLicense, insurance, fedExIdUpload } = publicData || {};
   const profileImageId = user.profileImage ? user.profileImage.id : null;
   const profileImage = image || { imageId: profileImageId };
   const userTypeConfig = userTypes.find(config => config.userType === userType);
@@ -177,24 +177,43 @@ export const ProfileSettingsPageComponent = props => {
     </div>
   </div>;
 
-const uploadInsuranceContainer = <div className={css.uploadLicenseContainer}>
-<H4 as="h2">
-  <FormattedMessage id="ProfileSettingsPage.uploadInsuranceTitle" />
-</H4>
+  const uploadInsuranceContainer = <div className={css.uploadLicenseContainer}>
+    <H4 as="h2">
+      <FormattedMessage id="ProfileSettingsPage.uploadInsuranceTitle" />
+    </H4>
 
-<div className={css.licenseActions}>
-  {insurance ? <ExternalLink href={insurance}>
-    <FormattedMessage id="ProfileSettingsPage.viewInsuranceButton" />
-  </ExternalLink> : null}
+    <div className={css.licenseActions}>
+      {insurance ? <ExternalLink href={insurance}>
+        <FormattedMessage id="ProfileSettingsPage.viewInsuranceButton" />
+      </ExternalLink> : null}
 
-  <ExternalLink
-    target="_self"
-    href={`https://fs10.formsite.com/tKj6Xo/6mdvyvznco/fill?id1=${FedExID}`}
-  >
-    <FormattedMessage id={insurance ? "ProfileSettingsPage.reuploadInsuranceButton" : "ProfileSettingsPage.uploadInsuranceButton"} />
-  </ExternalLink>
-</div>
-</div>;
+      <ExternalLink
+        target="_self"
+        href={`https://fs10.formsite.com/tKj6Xo/6mdvyvznco/fill?id1=${FedExID}`}
+      >
+        <FormattedMessage id={insurance ? "ProfileSettingsPage.reuploadInsuranceButton" : "ProfileSettingsPage.uploadInsuranceButton"} />
+      </ExternalLink>
+    </div>
+  </div>;
+
+  const uploadFedExIdContainer = <div className={css.uploadLicenseContainer}>
+    <H4 as="h2">
+      <FormattedMessage id="ProfileSettingsPage.uploadFedExIdTitle" />
+    </H4>
+
+    <div className={css.licenseActions}>
+      {fedExIdUpload ? <ExternalLink href={fedExIdUpload}>
+        <FormattedMessage id="ProfileSettingsPage.viewFedExIdButton" />
+      </ExternalLink> : null}
+
+      <ExternalLink
+        target="_self"
+        href={`https://fs10.formsite.com/tKj6Xo/ysmoxw3fnh/fill?id1=${FedExID}`}
+      >
+        <FormattedMessage id={fedExIdUpload ? "ProfileSettingsPage.reuploadFedExIdButton" : "ProfileSettingsPage.uploadFedExIdButton"} />
+      </ExternalLink>
+    </div>
+  </div>;
 
   const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 
@@ -220,6 +239,7 @@ const uploadInsuranceContainer = <div className={css.uploadLicenseContainer}>
           {profileSettingsForm}
           {uploadLicenseContainer}
           {uploadInsuranceContainer}
+          {process.env.REACT_APP_SHOW_FEDEXID_UPLOAD == 'true' && uploadFedExIdContainer}
         </div>
       </LayoutSingleColumn>
     </Page>
