@@ -214,7 +214,7 @@ exports.transactionLineItems = (listing, orderData, providerCommission, customer
     : [];
 
   let discount = null
-  publicData?.discount.forEach(({ minDays, percentage }) => {
+  publicData?.discount?.forEach(({ minDays, percentage }) => {
     if (quantity >= minDays) {
       discount = percentage
     }
