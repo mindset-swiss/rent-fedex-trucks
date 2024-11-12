@@ -17,7 +17,7 @@ const Mapper = {
     formType: '15',
     date: '1',
     driverName: '12',
-    mileage: '3',
+    mileage: '16',
     fuelLevel: '4',
     issuesOrDamage: '5',
     conditionAfterRental: '7',
@@ -35,8 +35,8 @@ module.exports = async (req, res) => {
         const mileage = req.body.items.find(i => i.id == Mapper["mileage"]).value;
         const fuelLevel = req.body.items.find(i => i.id == Mapper["fuelLevel"]).value;
         const issuesOrDamage = req.body.items.find(i => i.id == Mapper["issuesOrDamage"]).value;
-        const conditionAfterRental = req.body.items.find(i => i.id == Mapper["conditionAfterRental"]).values[0].value;
-        const currentCondition = req.body.items.find(i => i.id == Mapper["currentCondition"]).values[0].value;
+        const conditionAfterRental = req.body.items.find(i => i.id == Mapper["conditionAfterRental"])?.values[0]?.value;
+        const currentCondition = req.body.items.find(i => i.id == Mapper["currentCondition"])?.values[0]?.value;
         const additionalComments = req.body.items.find(i => i.id == Mapper["additionalComments"]).value;
         const odoMeterPhotos = req.body.items.find(i => i.id == Mapper["odoMeterPhotos"]).values;
         const exteriorPhotos = req.body.items.find(i => i.id == Mapper["exteriorPhotos"]).values;
@@ -58,6 +58,19 @@ module.exports = async (req, res) => {
                         odoMeterPhotos,
                         exteriorPhotos,
                     }
+                }
+            })
+
+            const { data: listingResponse } = await integrationSdk.transactions.show({
+                id: transactionId,
+                include: ['listing']
+            })
+            const listingId = listingResponse?.data?.relationships?.listing?.data?.id.uuid
+
+            await integrationSdk.listings.update({
+                id: listingId,
+                publicData: {
+                    Miles: mileage
                 }
             })
 
