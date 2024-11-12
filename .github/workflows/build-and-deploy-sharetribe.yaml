@@ -1,0 +1,70 @@
+name: build-and-deploy-sharetribe
+run-name: Build and deploy Sharetribe
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - stage
+      - main
+    paths:
+      - src/**
+      - server/**
+      - package.json
+      - yarn.lock
+      - .github/workflows/build-and-deploy-sharetribe.yaml
+      - Dockerfile
+jobs:
+  deploy-server:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'Production' || 'Staging' }}
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Get Node version
+        id: node-version
+        run: echo "NODE_RUNTIME_VERSION=$(cat .nvmrc | sed 's/^v//')" >> "$GITHUB_OUTPUT"
+
+      - name: Generate .env file
+        id: env-file
+        run: |
+          rm -f .env
+          echo "$ALL_VARS" | jq -r 'to_entries[] | select(.key | startswith("REACT_APP")) | "\(.key)=\(.value)"' >> .env
+          echo "CACHE_CHECKSUM=$(md5sum .env | awk '{ print $1 }')" >> "$GITHUB_OUTPUT"
+        env:
+          ALL_VARS: ${{ toJSON(vars) }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha,scope=${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+          # re-add linux/arm64 when we've supported the architecture
+          platforms: linux/amd64
+          push: true
+          context: .
+          secret-files: |
+            env=.env
+          build-args: |
+            CACHE_CHECKSUM=${{ steps.env-file.outputs.CACHE_CHECKSUM }}
+            NODE_RUNTIME_VERSION=${{ steps.node-version.outputs.NODE_RUNTIME_VERSION }}
+          tags: |
+            843481845710.dkr.ecr.eu-west-1.amazonaws.com/rentfedextrucks:${{ github.sha }},
+            843481845710.dkr.ecr.eu-west-1.amazonaws.com/rentfedextrucks:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
